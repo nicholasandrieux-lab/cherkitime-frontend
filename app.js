@@ -1,5 +1,5 @@
 // ⚙️ CONFIG — remplace par ton URL Railway une fois déployé
-const BACKEND_URL = 'https://cherkitime-backend.up.railway.app';
+const BACKEND_URL = 'https://cherkitime-backend.onrender.com';
 const FIREBASE_CONFIG = {
   apiKey: "AIzaSyA-5Oxvy_XHJQlDw_tHWytbdOcG2_jgMso",
   authDomain: "cherkitime-45e90.firebaseapp.com",
