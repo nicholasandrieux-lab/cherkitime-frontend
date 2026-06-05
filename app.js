@@ -59,6 +59,9 @@ async function subscribeToPush() {
       return;
     }
 
+    // Attendre que le service worker soit bien activé
+    await navigator.serviceWorker.ready;
+
     // Récupération du token FCM
     const token = await messaging.getToken({
       vapidKey: VAPID_KEY,
@@ -94,11 +97,17 @@ async function subscribeToPush() {
 async function unsubscribe() {
   const token = localStorage.getItem('cherkitime_token');
   if (token) {
-    await fetch(`${BACKEND_URL}/unsubscribe`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ token }),
-    });
+    try {
+      await fetch(`${BACKEND_URL}/unsubscribe`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ token }),
+      });
+    } catch (err) {
+      console.error('❌ Erreur désabonnement:', err);
+    }
+  } else {
+    console.warn('⚠️ Aucun token trouvé dans localStorage, désabonnement local uniquement.');
   }
   localStorage.removeItem('cherkitime_subscribed');
   localStorage.removeItem('cherkitime_token');
