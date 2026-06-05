@@ -15,6 +15,34 @@ const VAPID_KEY = 'BJREOsjayvCMMGzkHyJSGVTG2w01fdm3oeCK3rklOaReNkBKGjhSsUQwyzlU4
 const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
 const isInStandaloneMode = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
 const isAndroid = /android/i.test(navigator.userAgent);
+const LANG = navigator.language.startsWith('fr') ? 'fr' : 'en';
+
+const TRANSLATIONS = {
+  fr: {
+    'subscribe-btn':    '🔔 Activer les notifications',
+    'subscribed-title': 'Tu es abonné !',
+    'subscribed-text':  'Tu recevras une notification dès que Cherki est titulaire ou entre en jeu, même téléphone verrouillé.',
+    'unsub-btn':        'Se désabonner',
+    'subtitle':         'Reçois une notification instantanée dès que Ryan Cherki commence un match ou entre en jeu.',
+    'ios-guide-title':  '📱 Pour activer les notifications sur iPhone',
+  },
+  en: {
+    'subscribe-btn':    '🔔 Enable notifications',
+    'subscribed-title': "You're subscribed!",
+    'subscribed-text':  "You'll get a notification as soon as Cherki starts or comes on, even with your phone locked.",
+    'unsub-btn':        'Unsubscribe',
+    'subtitle':         'Get an instant notification as soon as Ryan Cherki starts or comes on as a substitute.',
+    'ios-guide-title':  '📱 To enable notifications on iPhone',
+  },
+};
+
+function applyTranslations() {
+  const t = TRANSLATIONS[LANG];
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.dataset.i18n;
+    if (t[key]) el.textContent = t[key];
+  });
+}
 
 let messaging = null;
 
@@ -135,6 +163,7 @@ function showIOSGuide() {
 
 // --- Init au chargement ---
 window.addEventListener('DOMContentLoaded', async () => {
+  applyTranslations();
   await initFirebaseMessaging();
 
   // iOS pas encore en mode standalone → montrer le guide d'installation

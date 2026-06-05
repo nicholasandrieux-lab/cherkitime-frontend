@@ -288,14 +288,13 @@
     </div>
 
     <h1>Cherki<span>Time</span></h1>
-    <p class="subtitle">
-      Reçois une notification instantanée dès que<br>
-      <strong>Ryan Cherki</strong> commence un match ou entre en jeu.
+    <p class="subtitle" data-i18n="subtitle">
+      Reçois une notification instantanée dès que Ryan Cherki commence un match ou entre en jeu.
     </p>
 
     <!-- Guide iOS (affiché sur iPhone si pas encore PWA) -->
     <div id="ios-guide">
-      <h3>📱 Pour activer les notifications sur iPhone</h3>
+      <h3 data-i18n="ios-guide-title">📱 Pour activer les notifications sur iPhone</h3>
       <p style="font-size:13px; color:#888; margin-bottom:18px; text-align:center;">
         iOS exige que tu ajoutes ce site à ton écran d'accueil.
       </p>
@@ -332,7 +331,7 @@
     <!-- Section abonnement -->
     <div id="subscribe-section">
       <div id="status-message" class="status-message"></div>
-      <button id="subscribe-btn" onclick="subscribeToPush()">
+      <button id="subscribe-btn" data-i18n="subscribe-btn" onclick="subscribeToPush()">
         🔔 Activer les notifications
       </button>
     </div>
@@ -341,8 +340,8 @@
     <div id="subscribed-section">
       <div class="subscribed-card">
         <div class="icon">🟢</div>
-        <h2>Tu es abonné !</h2>
-        <p>Tu recevras une notification dès que Cherki est titulaire ou entre en jeu, même téléphone verrouillé.</p>
+        <h2 data-i18n="subscribed-title">Tu es abonné !</h2>
+        <p data-i18n="subscribed-text">Tu recevras une notification dès que Cherki est titulaire ou entre en jeu, même téléphone verrouillé.</p>
       </div>
 
       <div class="stats-row">
@@ -360,7 +359,7 @@
         </div>
       </div>
 
-<button class="btn-unsub" onclick="unsubscribe()">Se désabonner</button>
+<button class="btn-unsub" data-i18n="unsub-btn" onclick="unsubscribe()">Se désabonner</button>
     </div>
 
   </div>
