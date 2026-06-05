@@ -114,18 +114,6 @@ async function unsubscribe() {
   location.reload();
 }
 
-// --- Test notification ---
-async function testNotif() {
-  try {
-    const res = await fetch(`${BACKEND_URL}/test-notif`, { method: 'POST' });
-    if (res.ok) {
-      document.getElementById('test-feedback').textContent = '✅ Notif envoyée ! Tu devrais la recevoir dans quelques secondes.';
-    }
-  } catch (err) {
-    document.getElementById('test-feedback').textContent = '❌ Erreur — vérifie que le backend est bien démarré.';
-  }
-}
-
 // --- UI helpers ---
 function updateStatus(type, message) {
   const el = document.getElementById('status-message');
