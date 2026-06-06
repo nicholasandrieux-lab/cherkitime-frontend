@@ -24,6 +24,7 @@ const TRANSLATIONS = {
     'subscribed-title': 'Notifications activées !',
     'subscribed-text':  'Tu recevras une notification dès que Cherki est titulaire ou entre en jeu, même téléphone verrouillé.',
     'unsub-btn':        'Se désabonner',
+    'share-btn':        'Partager l\'app 🔗',
     'ios-guide-title':  '📱 Pour activer les notifications sur iPhone',
   },
   en: {
@@ -32,6 +33,7 @@ const TRANSLATIONS = {
     'subscribed-title': 'Notifications enabled!',
     'subscribed-text':  "You'll get a notification as soon as Cherki starts or comes on, even with your phone locked.",
     'unsub-btn':        'Unsubscribe',
+    'share-btn':        'Share the app 🔗',
     'ios-guide-title':  '📱 To enable notifications on iPhone',
   },
 };
@@ -140,6 +142,24 @@ async function unsubscribe() {
   localStorage.removeItem('cherkitime_subscribed');
   localStorage.removeItem('cherkitime_token');
   location.reload();
+}
+
+// --- Partage ---
+async function shareApp() {
+  const shareData = {
+    title: 'CherkiTime ⚡',
+    text: 'Reçois une notif dès que Cherki joue ! 🔴',
+    url: 'https://cherkitime-frontend.vercel.app',
+  };
+  if (navigator.share) {
+    try { await navigator.share(shareData); } catch (err) { /* annulé par l'utilisateur */ }
+  } else {
+    await navigator.clipboard.writeText(shareData.url);
+    const btn = document.getElementById('share-btn');
+    const original = btn.textContent;
+    btn.textContent = '✅ Lien copié !';
+    setTimeout(() => { btn.textContent = original; }, 2000);
+  }
 }
 
 // --- UI helpers ---

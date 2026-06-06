@@ -152,6 +152,18 @@
       line-height: 1.6;
     }
 
+    /* Share */
+    .btn-share {
+      background: none;
+      border: none;
+      color: #002395;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: underline;
+      padding: 4px 8px;
+    }
+
     /* Unsubscribe */
     .btn-unsub {
       background: none;
@@ -292,6 +304,7 @@
         <div class="subscribed-icon">🔔</div>
         <div class="subscribed-title" data-i18n="subscribed-title">Notifications activées !</div>
         <p class="subscribed-text" data-i18n="subscribed-text">Tu recevras une notification dès que Cherki est titulaire ou entre en jeu, même téléphone verrouillé.</p>
+        <button id="share-btn" class="btn-share" data-i18n="share-btn" onclick="shareApp()">Partager l'app 🔗</button>
         <button class="btn-unsub" data-i18n="unsub-btn" onclick="unsubscribe()">Se désabonner</button>
       </div>
 
