@@ -109,7 +109,7 @@ async function subscribeToPush() {
     const res = await fetch(`${BACKEND_URL}/subscribe`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ token }),
+      body: JSON.stringify({ token, lang: navigator.language.startsWith('fr') ? 'fr' : 'en' }),
     });
 
     if (!res.ok) throw new Error('Erreur serveur');
