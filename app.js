@@ -47,6 +47,7 @@ function applyTranslations() {
 }
 
 let messaging = null;
+let retryTimeout = null;
 
 // --- Init Firebase Messaging ---
 async function initFirebaseMessaging() {
@@ -74,6 +75,7 @@ async function registerSW() {
 
 // --- Demande de permission + abonnement FCM ---
 async function subscribeToPush() {
+  clearTimeout(retryTimeout);
   updateStatus('loading', 'Activation en cours...');
 
   try {
@@ -119,7 +121,21 @@ async function subscribeToPush() {
 
   } catch (err) {
     console.error('❌ Erreur abonnement:', err);
-    updateStatus('error', `Erreur : ${err.message}`);
+    const msg = LANG === 'fr'
+      ? 'Une petite erreur s\'est produite, réessaie dans quelques secondes ! 🔄'
+      : 'A small error occurred, try again in a few seconds! 🔄';
+    const btnLabel = LANG === 'fr' ? 'Réessayer' : 'Try again';
+    const el = document.getElementById('status-message');
+    if (el) {
+      el.className = 'status-message status-error';
+      el.innerHTML = `${msg}<br><button id="retry-btn" style="margin-top:8px;background:#c62828;color:#fff;border:none;border-radius:8px;padding:6px 14px;font-size:13px;cursor:pointer;">${btnLabel}</button>`;
+      el.style.display = 'block';
+      document.getElementById('retry-btn').onclick = () => {
+        clearTimeout(retryTimeout);
+        subscribeToPush();
+      };
+    }
+    retryTimeout = setTimeout(() => subscribeToPush(), 3000);
   }
 }
 
