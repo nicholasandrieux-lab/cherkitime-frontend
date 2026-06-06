@@ -20,18 +20,18 @@ const LANG = navigator.language.startsWith('fr') ? 'fr' : 'en';
 const TRANSLATIONS = {
   fr: {
     'subscribe-btn':    '🔔 Activer les notifications',
-    'subscribed-title': 'Tu es abonné !',
+    'bell-hint':        'Appuie sur la cloche pour activer',
+    'subscribed-title': 'Notifications activées !',
     'subscribed-text':  'Tu recevras une notification dès que Cherki est titulaire ou entre en jeu, même téléphone verrouillé.',
     'unsub-btn':        'Se désabonner',
-    'subtitle':         'Reçois une notification instantanée dès que Ryan Cherki commence un match ou entre en jeu.',
     'ios-guide-title':  '📱 Pour activer les notifications sur iPhone',
   },
   en: {
     'subscribe-btn':    '🔔 Enable notifications',
-    'subscribed-title': "You're subscribed!",
+    'bell-hint':        'Tap the bell to enable',
+    'subscribed-title': 'Notifications enabled!',
     'subscribed-text':  "You'll get a notification as soon as Cherki starts or comes on, even with your phone locked.",
     'unsub-btn':        'Unsubscribe',
-    'subtitle':         'Get an instant notification as soon as Ryan Cherki starts or comes on as a substitute.',
     'ios-guide-title':  '📱 To enable notifications on iPhone',
   },
 };
@@ -158,7 +158,7 @@ function showSubscribedUI() {
 
 function showIOSGuide() {
   document.getElementById('ios-guide').style.display = 'block';
-  document.getElementById('subscribe-btn').style.display = 'none';
+  document.getElementById('subscribe-section').style.display = 'none';
 }
 
 // --- Init au chargement ---
