@@ -149,7 +149,7 @@ async function shareApp() {
   const shareData = {
     title: 'CherkiTime ⚡',
     text: 'Reçois une notif dès que Cherki joue ! 🔴',
-    url: 'https://cherkitime-frontend.vercel.app',
+    url: 'https://cherkitime.com',
   };
   if (navigator.share) {
     try { await navigator.share(shareData); } catch (err) { /* annulé par l'utilisateur */ }
