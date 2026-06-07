@@ -29,6 +29,8 @@ const TRANSLATIONS = {
     'stats-title':      'Saison 2024-25',
     'stat-goals':       'Buts · TCC',
     'stat-assists':     'Passes · TCC',
+    'status-watching':  'Watching for cherkiball...',
+    'status-sub':       'Notif garantie dès que Cherki joue ⚡',
     'footer-text':      'CherkiTime · fait par un fan ⚡',
     'ios-guide-title':  '📱 Pour activer les notifications sur iPhone',
   },
@@ -43,6 +45,8 @@ const TRANSLATIONS = {
     'stats-title':      'Season 2024-25',
     'stat-goals':       'Goals · All Comps',
     'stat-assists':     'Assists · All Comps',
+    'status-watching':  'Watching for cherkiball...',
+    'status-sub':       'Notification guaranteed when Cherki plays ⚡',
     'footer-text':      'CherkiTime · made by a fan ⚡',
     'ios-guide-title':  '📱 To enable notifications on iPhone',
   },
@@ -204,6 +208,22 @@ async function shareApp() {
   }
 }
 
+// --- Live status indicator ---
+function setLiveStatus(isLive) {
+  const dot = document.getElementById('status-dot');
+  const text = document.getElementById('status-text');
+  if (!dot || !text) return;
+  if (isLive) {
+    dot.style.background = '#22c55e';
+    document.querySelector('.pulse-ring').style.borderColor = '#22c55e';
+    text.textContent = LANG === 'fr' ? 'CHERKITIME EN DIRECT ⚡' : 'CHERKITIME LIVE ⚡';
+  } else {
+    dot.style.background = '#e63946';
+    document.querySelector('.pulse-ring').style.borderColor = '#e63946';
+    text.textContent = 'Watching for cherkiball...';
+  }
+}
+
 // --- UI helpers ---
 function updateStatus(type, message) {
   const el = document.getElementById('status-message');
@@ -217,6 +237,7 @@ function showSubscribedUI() {
   document.getElementById('subscribe-section').style.display = 'none';
   document.getElementById('subscribed-section').style.display = 'flex';
   loadSubscriberCount();
+  setLiveStatus(false);
 }
 
 function showIOSGuide() {

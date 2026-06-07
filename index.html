@@ -216,6 +216,15 @@
     .btn-share:active { transform: scale(0.97); }
     .btn-share:hover { opacity: 0.88; }
 
+    /* Live status indicator */
+    .status-row { display:flex; align-items:center; justify-content:center; gap:8px; margin:12px 0 4px; }
+    .pulse-wrap { position:relative; width:14px; height:14px; flex-shrink:0; }
+    .pulse-dot { width:14px; height:14px; border-radius:50%; background:#e63946; }
+    .pulse-ring { position:absolute; inset:-4px; border-radius:50%; border:2px solid #e63946; animation:pulse 1.5s ease-out infinite; }
+    @keyframes pulse { 0%{transform:scale(1);opacity:0.8} 100%{transform:scale(1.8);opacity:0} }
+    .status-text { font-size:13px; font-weight:700; color:#1a1a1a; }
+    .status-sub { font-size:11px; color:#aaa; text-align:center; margin-bottom:14px; }
+
     /* Unsubscribe */
     .btn-unsub {
       background: none;
@@ -352,6 +361,20 @@
 
       <!-- Section abonné -->
       <div id="subscribed-section">
+
+        <!-- Statut live -->
+        <div class="status-row">
+          <div class="pulse-wrap">
+            <div class="pulse-dot" id="status-dot"></div>
+            <div class="pulse-ring"></div>
+          </div>
+          <span class="status-text" id="status-text" data-i18n="status-watching">
+            Watching for cherkiball...
+          </span>
+        </div>
+        <p class="status-sub" data-i18n="status-sub">
+          Notif garantie dès que Cherki joue ⚡
+        </p>
 
         <!-- Compteur abonnés -->
         <div class="subscriber-counter">
