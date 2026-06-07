@@ -135,45 +135,96 @@
       display: none;
       flex-direction: column;
       align-items: center;
-      gap: 10px;
+      gap: 14px;
+      width: 100%;
     }
 
-    .subscribed-icon { font-size: 52px; margin-bottom: 4px; }
+    /* Subscriber counter */
+    .subscriber-counter { text-align: center; }
 
-    .subscribed-title {
-      font-size: 20px;
-      font-weight: 700;
+    .counter-main {
+      font-size: 15px;
+      color: #333;
+      line-height: 1.5;
+    }
+
+    .counter-num {
+      color: #ED2939;
+      font-weight: 800;
+      font-size: 30px;
+      vertical-align: baseline;
+    }
+
+    .counter-sub {
+      font-size: 12px;
+      color: #999;
+      margin-top: 2px;
+    }
+
+    /* Stats */
+    .stats-section { width: 100%; }
+
+    .stats-title {
+      font-size: 11px;
+      color: #aaa;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 8px;
+      text-align: center;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+    }
+
+    .stat-card {
+      background: #f7f7f7;
+      border-radius: 12px;
+      padding: 12px 6px;
+      text-align: center;
+    }
+
+    .stat-num {
+      font-size: 22px;
+      font-weight: 800;
       color: #111;
     }
 
-    .subscribed-text {
-      font-size: 14px;
-      color: #666;
-      line-height: 1.6;
+    .stat-label {
+      font-size: 10px;
+      color: #888;
+      margin-top: 3px;
+      line-height: 1.3;
     }
 
     /* Share */
     .btn-share {
-      background: none;
+      width: 100%;
+      padding: 14px;
+      background: #ED2939;
+      color: #fff;
       border: none;
-      color: #002395;
-      font-size: 13px;
-      font-weight: 600;
+      border-radius: 12px;
+      font-size: 15px;
+      font-weight: 700;
       cursor: pointer;
-      text-decoration: underline;
-      padding: 4px 8px;
+      transition: transform 0.1s, opacity 0.2s;
     }
+
+    .btn-share:active { transform: scale(0.97); }
+    .btn-share:hover { opacity: 0.88; }
 
     /* Unsubscribe */
     .btn-unsub {
       background: none;
-      border: none;
-      color: #bbb;
+      border: 1px solid #ddd;
+      color: #555;
       font-size: 13px;
       cursor: pointer;
-      text-decoration: underline;
-      padding: 4px 8px;
-      margin-top: 6px;
+      border-radius: 8px;
+      padding: 8px 16px;
     }
 
     /* iOS guide */
@@ -301,17 +352,43 @@
 
       <!-- Section abonné -->
       <div id="subscribed-section">
-        <div class="subscribed-icon">🔔</div>
-        <div class="subscribed-title" data-i18n="subscribed-title">Notifications activées !</div>
-        <p class="subscribed-text" data-i18n="subscribed-text">Tu recevras une notification dès que Cherki est titulaire ou entre en jeu, même téléphone verrouillé.</p>
-        <button id="share-btn" class="btn-share" data-i18n="share-btn" onclick="shareApp()">Partager l'app 🔗</button>
+
+        <!-- Compteur abonnés -->
+        <div class="subscriber-counter">
+          <div class="counter-main">
+            <span class="counter-num" id="subscriber-count">—</span> enjoyers waiting for cherkiball
+          </div>
+          <div class="counter-sub" data-i18n="subscribers-sub">dont toi ⚡</div>
+        </div>
+
+        <!-- Stats Cherki -->
+        <div class="stats-section">
+          <div class="stats-title" data-i18n="stats-title">Saison 2024-25</div>
+          <div class="stats-grid">
+            <div class="stat-card">
+              <div class="stat-num">8</div>
+              <div class="stat-label" data-i18n="stat-goals">Buts</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-num">6</div>
+              <div class="stat-label" data-i18n="stat-assists">Passes décisives</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-num">28</div>
+              <div class="stat-label" data-i18n="stat-matches">Matchs joués</div>
+            </div>
+          </div>
+        </div>
+
+        <button id="share-btn" class="btn-share" data-i18n="share-btn" onclick="shareApp()">🔗 Partager l'app</button>
         <button class="btn-unsub" data-i18n="unsub-btn" onclick="unsubscribe()">Se désabonner</button>
+
       </div>
 
     </div>
   </div>
 
-  <footer>CherkiTime · Fait par un fan ⚡</footer>
+  <footer data-i18n="footer-text">CherkiTime · fait par un fan ⚡</footer>
 
   <!-- Firebase SDK -->
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>

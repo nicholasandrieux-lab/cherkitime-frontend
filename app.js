@@ -24,7 +24,13 @@ const TRANSLATIONS = {
     'subscribed-title': 'Notifications activées !',
     'subscribed-text':  'Tu recevras une notification dès que Cherki est titulaire ou entre en jeu, même téléphone verrouillé.',
     'unsub-btn':        'Se désabonner',
-    'share-btn':        'Partager l\'app 🔗',
+    'share-btn':        '🔗 Partager l\'app',
+    'subscribers-sub':  'dont toi ⚡',
+    'stats-title':      'Saison 2024-25',
+    'stat-goals':       'Buts',
+    'stat-assists':     'Passes décisives',
+    'stat-matches':     'Matchs joués',
+    'footer-text':      'CherkiTime · fait par un fan ⚡',
     'ios-guide-title':  '📱 Pour activer les notifications sur iPhone',
   },
   en: {
@@ -33,7 +39,13 @@ const TRANSLATIONS = {
     'subscribed-title': 'Notifications enabled!',
     'subscribed-text':  "You'll get a notification as soon as Cherki starts or comes on, even with your phone locked.",
     'unsub-btn':        'Unsubscribe',
-    'share-btn':        'Share the app 🔗',
+    'share-btn':        '🔗 Share the app',
+    'subscribers-sub':  'including you ⚡',
+    'stats-title':      'Season 2024-25',
+    'stat-goals':       'Goals',
+    'stat-assists':     'Assists',
+    'stat-matches':     'Matches played',
+    'footer-text':      'CherkiTime · made by a fan ⚡',
     'ios-guide-title':  '📱 To enable notifications on iPhone',
   },
 };
@@ -160,6 +172,19 @@ async function unsubscribe() {
   location.reload();
 }
 
+// --- Compteur abonnés ---
+async function loadSubscriberCount() {
+  try {
+    const res = await fetch(`${BACKEND_URL}/subscribers`);
+    if (!res.ok) return;
+    const data = await res.json();
+    const el = document.getElementById('subscriber-count');
+    if (el && data.count !== undefined) el.textContent = data.count;
+  } catch (err) {
+    console.warn('⚠️ Compteur indisponible:', err);
+  }
+}
+
 // --- Partage ---
 async function shareApp() {
   const shareData = {
@@ -200,6 +225,7 @@ function showIOSGuide() {
 // --- Init au chargement ---
 window.addEventListener('DOMContentLoaded', async () => {
   applyTranslations();
+  loadSubscriberCount();
   await initFirebaseMessaging();
 
   // iOS pas encore en mode standalone → montrer le guide d'installation
