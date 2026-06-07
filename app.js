@@ -215,6 +215,7 @@ function updateStatus(type, message) {
 function showSubscribedUI() {
   document.getElementById('subscribe-section').style.display = 'none';
   document.getElementById('subscribed-section').style.display = 'flex';
+  loadSubscriberCount();
 }
 
 function showIOSGuide() {
