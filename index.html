@@ -155,6 +155,10 @@
       vertical-align: baseline;
     }
 
+    .counter-text { color: #002395; font-size: 22px; font-weight: 900; font-family: system-ui; }
+
+    .divider { width: 100%; height: 1px; background: #f0f0f0; }
+
     .counter-sub {
       font-size: 12px;
       color: #999;
@@ -376,13 +380,17 @@
           Notif garantie dès que Cherki joue ⚡
         </p>
 
+        <div class="divider"></div>
+
         <!-- Compteur abonnés -->
         <div class="subscriber-counter">
           <div class="counter-main">
-            <span class="counter-num" id="subscriber-count">—</span> enjoyers waiting for cherkiball
+            <span class="counter-num" id="subscriber-count">—</span><span class="counter-text"> enjoyers waiting for cherkiball</span>
           </div>
           <div class="counter-sub" data-i18n="subscribers-sub">dont toi ⚡</div>
         </div>
+
+        <div class="divider"></div>
 
         <!-- Stats Cherki -->
         <div class="stats-section">
@@ -398,6 +406,8 @@
             </div>
           </div>
         </div>
+
+        <div class="divider"></div>
 
         <button id="share-btn" class="btn-share" data-i18n="share-btn" onclick="shareApp()">🔗 Partager l'app</button>
         <button class="btn-unsub" data-i18n="unsub-btn" onclick="unsubscribe()">Se désabonner</button>
