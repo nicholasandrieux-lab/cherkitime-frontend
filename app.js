@@ -224,10 +224,29 @@ function showIOSGuide() {
   document.getElementById('subscribe-section').style.display = 'none';
 }
 
+// --- Stats Cherki ---
+async function loadCherkiStats() {
+  try {
+    const res = await fetch(`${BACKEND_URL}/cherki/stats`);
+    if (!res.ok) return;
+    const data = await res.json();
+    const statNums = document.querySelectorAll('.stat-num');
+    if (statNums[0]) statNums[0].textContent = data.goals ?? '—';
+    if (statNums[1]) statNums[1].textContent = data.assists ?? '—';
+    const titleEl = document.querySelector('[data-i18n="stats-title"]');
+    if (titleEl && data.season) {
+      titleEl.textContent = LANG === 'fr' ? `Saison ${data.season}` : `Season ${data.season}`;
+    }
+  } catch (err) {
+    console.error('❌ Erreur loadCherkiStats:', err);
+  }
+}
+
 // --- Init au chargement ---
 window.addEventListener('DOMContentLoaded', async () => {
   applyTranslations();
   loadSubscriberCount();
+  loadCherkiStats();
   await initFirebaseMessaging();
 
   // iOS pas encore en mode standalone → montrer le guide d'installation
