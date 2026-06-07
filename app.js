@@ -179,7 +179,7 @@ async function loadSubscriberCount() {
     if (!res.ok) return;
     const data = await res.json();
     const el = document.getElementById('subscriber-count');
-    if (el && data.count !== undefined) el.textContent = data.count;
+    if (el && data.subscribers !== undefined) el.textContent = data.subscribers;
   } catch (err) {
     console.warn('⚠️ Compteur indisponible:', err);
   }
