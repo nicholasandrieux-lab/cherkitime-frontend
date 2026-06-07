@@ -174,15 +174,18 @@ async function unsubscribe() {
 
 // --- Compteur abonnés ---
 async function loadSubscriberCount() {
-  try {
-    const res = await fetch(`${BACKEND_URL}/subscribers`);
-    if (!res.ok) return;
-    const data = await res.json();
-    const el = document.getElementById('subscriber-count');
-    if (el) el.textContent = data.subscribers ?? '—';
-  } catch (err) {
-    console.warn('Compteur indisponible:', err);
-  }
+  const tryFetch = async () => {
+    try {
+      const res = await fetch(`${BACKEND_URL}/subscribers`);
+      if (!res.ok) throw new Error('not ok');
+      const data = await res.json();
+      const el = document.getElementById('subscriber-count');
+      if (el) el.textContent = data.subscribers ?? '—';
+    } catch (err) {
+      setTimeout(tryFetch, 3000);
+    }
+  };
+  tryFetch();
 }
 
 // --- Partage ---
