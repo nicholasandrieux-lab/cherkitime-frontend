@@ -304,6 +304,24 @@
       font-size: 14px;
     }
 
+    /* Skeleton loading */
+    .skeleton {
+      background: linear-gradient(90deg,
+        #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.5s infinite;
+      border-radius: 8px;
+    }
+    @keyframes shimmer {
+      0%   { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
+    }
+    .skeleton-counter       { height: 28px; width: 85%; margin: 4px auto; }
+    .skeleton-sub           { height: 14px; width: 40%; margin: 8px auto; border-radius: 6px; }
+    .skeleton-title         { height: 12px; width: 35%; margin: 0 auto 10px; border-radius: 6px; }
+    .skeleton-stat          { height: 22px; width: 50%; margin: 4px auto; border-radius: 6px; }
+    .skeleton-stat-label-sk { height: 10px; width: 60%; margin: 6px auto 0; border-radius: 4px; }
+
     /* Footer */
     footer {
       margin-top: 28px;
@@ -384,25 +402,32 @@
 
         <!-- Compteur abonnés -->
         <div class="subscriber-counter">
-          <div class="counter-main">
+          <div class="skeleton skeleton-counter" id="skeleton-counter"></div>
+          <div class="skeleton skeleton-sub" id="skeleton-sub"></div>
+          <div class="counter-main" data-skeleton-hide style="display:none">
             <span class="counter-num" id="subscriber-count">—</span><span class="counter-text"> enjoyers waiting for cherkiball</span>
           </div>
-          <div class="counter-sub" data-i18n="subscribers-sub">dont toi ⚡</div>
+          <div class="counter-sub" data-i18n="subscribers-sub" data-skeleton-hide style="display:none">dont toi ⚡</div>
         </div>
 
         <div class="divider"></div>
 
         <!-- Stats Cherki -->
         <div class="stats-section">
-          <div class="stats-title" data-i18n="stats-title">Saison 2024-25</div>
+          <div class="skeleton skeleton-title" id="skeleton-stats-title"></div>
+          <div class="stats-title" data-i18n="stats-title" data-skeleton-hide style="display:none">Saison 2024-25</div>
           <div class="stats-grid">
             <div class="stat-card">
-              <div class="stat-num">12</div>
-              <div class="stat-label" data-i18n="stat-goals">Buts · TCC</div>
+              <div class="skeleton skeleton-stat" id="skeleton-stat-1"></div>
+              <div class="skeleton skeleton-stat-label-sk"></div>
+              <div class="stat-num" data-skeleton-hide style="display:none">—</div>
+              <div class="stat-label" data-i18n="stat-goals" data-skeleton-hide style="display:none">Buts · TCC</div>
             </div>
             <div class="stat-card">
-              <div class="stat-num">17</div>
-              <div class="stat-label" data-i18n="stat-assists">Passes · TCC</div>
+              <div class="skeleton skeleton-stat" id="skeleton-stat-2"></div>
+              <div class="skeleton skeleton-stat-label-sk"></div>
+              <div class="stat-num" data-skeleton-hide style="display:none">—</div>
+              <div class="stat-label" data-i18n="stat-assists" data-skeleton-hide style="display:none">Passes · TCC</div>
             </div>
           </div>
         </div>

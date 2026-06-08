@@ -183,6 +183,7 @@ async function loadSubscriberCount() {
       const data = await res.json();
       const el = document.getElementById('subscriber-count');
       if (el) el.textContent = data.subscribers ?? '—';
+      hideSkeleton();
     } catch (err) {
       setTimeout(tryFetch, 3000);
     }
@@ -224,6 +225,12 @@ function setLiveStatus(isLive) {
   }
 }
 
+// --- Skeleton loading ---
+function hideSkeleton() {
+  document.querySelectorAll('.skeleton').forEach(el => el.style.display = 'none');
+  document.querySelectorAll('[data-skeleton-hide]').forEach(el => el.style.display = '');
+}
+
 // --- UI helpers ---
 function updateStatus(type, message) {
   const el = document.getElementById('status-message');
@@ -238,6 +245,7 @@ function showSubscribedUI() {
   document.getElementById('subscribed-section').style.display = 'flex';
   loadSubscriberCount();
   setLiveStatus(false);
+  setTimeout(hideSkeleton, 6000);
 }
 
 function showIOSGuide() {
@@ -258,6 +266,7 @@ async function loadCherkiStats() {
     if (titleEl && data.season) {
       titleEl.textContent = LANG === 'fr' ? `Saison ${data.season}` : `Season ${data.season}`;
     }
+    hideSkeleton();
   } catch (err) {
     console.error('❌ Erreur loadCherkiStats:', err);
   }
