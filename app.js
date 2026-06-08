@@ -283,8 +283,17 @@ async function loadCherkiStats() {
   }
 }
 
+// Efface le badge PWA quand l'utilisateur revient sur l'app
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'visible') {
+    navigator.clearAppBadge?.();
+  }
+});
+window.addEventListener('focus', () => navigator.clearAppBadge?.());
+
 // --- Init au chargement ---
 window.addEventListener('DOMContentLoaded', async () => {
+  navigator.clearAppBadge?.();
   applyTranslations();
   loadSubscriberCount();
   loadCherkiStats();

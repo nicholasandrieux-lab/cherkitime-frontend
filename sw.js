@@ -42,18 +42,29 @@ self.addEventListener('push', (event) => {
   };
 
   const title = data.title || data.notification?.title || '🔴 CHERKITIME !';
-  event.waitUntil(self.registration.showNotification(title, options));
+  const isStats = title.includes('📊') || data.data?.type === 'stats';
+
+  event.waitUntil(
+    self.registration.showNotification(title, options).then(() => {
+      if (isStats && self.navigator?.setAppBadge) {
+        return self.navigator.setAppBadge(1);
+      }
+    })
+  );
 });
 
-// Clic sur la notification → ouvre l'app
+// Clic sur la notification → ouvre l'app + efface le badge
 self.addEventListener('notificationclick', (event) => {
   event.notification.close();
   event.waitUntil(
-    clients.matchAll({ type: 'window', includeUncontrolled: true }).then((clientList) => {
-      for (const client of clientList) {
-        if (client.url === '/' && 'focus' in client) return client.focus();
-      }
-      if (clients.openWindow) return clients.openWindow('/');
-    })
+    Promise.all([
+      self.navigator?.clearAppBadge?.(),
+      clients.matchAll({ type: 'window', includeUncontrolled: true }).then((clientList) => {
+        for (const client of clientList) {
+          if (client.url === '/' && 'focus' in client) return client.focus();
+        }
+        if (clients.openWindow) return clients.openWindow('/');
+      }),
+    ])
   );
 });
