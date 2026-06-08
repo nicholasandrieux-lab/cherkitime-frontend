@@ -240,11 +240,22 @@ function updateStatus(type, message) {
   el.style.display = 'block';
 }
 
+async function loadMatchStatus() {
+  try {
+    const res = await fetch(`${BACKEND_URL}/match/status`);
+    if (!res.ok) return;
+    const data = await res.json();
+    setLiveStatus(data.live === true);
+  } catch (err) {
+    console.error('❌ Erreur loadMatchStatus:', err);
+  }
+}
+
 function showSubscribedUI() {
   document.getElementById('subscribe-section').style.display = 'none';
   document.getElementById('subscribed-section').style.display = 'flex';
   loadSubscriberCount();
-  setLiveStatus(false);
+  loadMatchStatus();
   setTimeout(hideSkeleton, 6000);
 }
 
