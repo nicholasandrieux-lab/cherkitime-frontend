@@ -24,14 +24,15 @@ const TRANSLATIONS = {
     'subscribed-title': 'Notifications activées !',
     'subscribed-text':  'Tu recevras une notification dès que Cherki est titulaire ou entre en jeu, même téléphone verrouillé.',
     'unsub-btn':        'Se désabonner',
-    'share-btn':        '🔗 Partager l\'app',
+    'share-btn':        'Partager l\'app',
     'subscribers-sub':  'dont toi ⚡',
-    'stats-title':      'Saison 2024-25',
+    'counter-text':     ' fans en attente de cherkiball',
+    'stats-title':      'SAISON 25/26',
     'stat-goals':       'Buts · TCC',
     'stat-assists':     'Passes · TCC',
-    'status-watching':  'Watching for cherkiball...',
+    'status-watching':  'En attente de cherkiball... 🔴',
     'status-sub':       'Notif garantie dès que Cherki joue ⚡',
-    'footer-text':      'CherkiTime · fait par un fan ⚡',
+    'footer-text':      'fait par un fan ⚡',
     'ios-guide-title':  '📱 Pour activer les notifications sur iPhone',
   },
   en: {
@@ -40,14 +41,15 @@ const TRANSLATIONS = {
     'subscribed-title': 'Notifications enabled!',
     'subscribed-text':  "You'll get a notification as soon as Cherki starts or comes on, even with your phone locked.",
     'unsub-btn':        'Unsubscribe',
-    'share-btn':        '🔗 Share the app',
+    'share-btn':        'Share the app',
     'subscribers-sub':  'including you ⚡',
-    'stats-title':      'Season 2024-25',
-    'stat-goals':       'Goals · All Comps',
-    'stat-assists':     'Assists · All Comps',
-    'status-watching':  'Watching for cherkiball...',
-    'status-sub':       'Notification guaranteed when Cherki plays ⚡',
-    'footer-text':      'CherkiTime · made by a fan ⚡',
+    'counter-text':     ' enjoyers waiting for cherkiball',
+    'stats-title':      'SEASON 25/26',
+    'stat-goals':       'Goals · ACC',
+    'stat-assists':     'Assists · ACC',
+    'status-watching':  'Watching for cherkiball... 🔴',
+    'status-sub':       'Notifications guaranteed when Cherki plays ⚡',
+    'footer-text':      'made by a fan ⚡',
     'ios-guide-title':  '📱 To enable notifications on iPhone',
   },
 };
@@ -221,7 +223,7 @@ function setLiveStatus(isLive) {
   } else {
     dot.style.background = '#e63946';
     document.querySelector('.pulse-ring').style.borderColor = '#e63946';
-    text.textContent = 'Watching for cherkiball...';
+    text.textContent = TRANSLATIONS[LANG]['status-watching'];
   }
 }
 
@@ -275,7 +277,7 @@ async function loadCherkiStats() {
     if (statNums[1]) statNums[1].textContent = data.assists ?? '—';
     const titleEl = document.querySelector('[data-i18n="stats-title"]');
     if (titleEl && data.season) {
-      titleEl.textContent = LANG === 'fr' ? `Saison ${data.season}` : `Season ${data.season}`;
+      titleEl.textContent = LANG === 'fr' ? `SAISON ${data.season}` : `SEASON ${data.season}`;
     }
     hideSkeleton();
   } catch (err) {
