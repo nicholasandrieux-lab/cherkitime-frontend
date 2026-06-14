@@ -224,15 +224,22 @@ async function shareApp() {
 function setLiveStatus(isLive) {
   const dot = document.getElementById('status-dot');
   const text = document.getElementById('status-text');
+  const ring = document.querySelector('.pulse-ring');
+  const badge = document.getElementById('live-badge');
   if (!dot || !text) return;
-  // Dot toujours lime (DA bleu nuit + lime) — seul le texte change
-  dot.style.background = '#CCFF00';
-  document.querySelector('.pulse-ring').style.borderColor = '#CCFF00';
-  if (isLive) {
-    text.textContent = LANG === 'fr' ? 'CHERKITIME EN DIRECT ⚡' : 'CHERKITIME LIVE ⚡';
-  } else {
-    text.textContent = TRANSLATIONS[LANG]['status-watching'];
-  }
+
+  const LIME = '#CCFF00';
+  const RED  = '#ED2939';
+  const color = isLive ? LIME : RED;
+
+  dot.style.background = color;
+  if (ring) ring.style.borderColor = color;
+  // Header LIVE : lime + pulse en direct, rouge sans pulse sinon (via .is-live)
+  if (badge) badge.classList.toggle('is-live', isLive);
+
+  text.textContent = isLive
+    ? (LANG === 'fr' ? 'CHERKITIME EN DIRECT ⚡' : 'CHERKITIME LIVE ⚡')
+    : TRANSLATIONS[LANG]['status-watching'];
 }
 
 // --- Skeleton loading ---

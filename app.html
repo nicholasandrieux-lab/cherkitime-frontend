@@ -113,9 +113,13 @@
       text-transform: uppercase;
       color: var(--lime);
     }
+    /* défaut = pas de match (rouge, pas de pulse) — setLiveStatus() active le lime + pulse en direct */
     .live-badge .live-dot {
       width: 8px; height: 8px;
       border-radius: 50%;
+      background: #ED2939;
+    }
+    .live-badge.is-live .live-dot {
       background: var(--lime);
       box-shadow: 0 0 0 0 rgba(204,255,0,0.6);
       animation: ping 1.8s var(--ease) infinite;
@@ -227,13 +231,17 @@
       gap: 10px; margin-bottom: 8px;
     }
     .pulse-wrap { position: relative; width: 12px; height: 12px; flex-shrink: 0; }
-    .pulse-dot  { width: 12px; height: 12px; border-radius: 50%; background: var(--lime); }
+    /* défaut = en attente (rouge) — setLiveStatus() passe au lime en direct */
+    .pulse-dot  { width: 12px; height: 12px; border-radius: 50%; background: #ED2939; }
     .pulse-ring {
       position: absolute; inset: -4px;
-      border-radius: 50%; border: 2px solid var(--lime);
+      border-radius: 50%; border: 2px solid #ED2939;
       animation: pulse 1.6s ease-out infinite;
     }
     @keyframes pulse { 0% { transform: scale(1); opacity: 0.8; } 100% { transform: scale(1.8); opacity: 0; } }
+
+    /* séparateurs entre sections */
+    .sep { border: none; border-top: 1px solid rgba(244,243,239,0.12); margin: 0; }
     .status-text {
       font-family: "IBM Plex Mono", monospace;
       font-size: 13px; font-weight: 600;
@@ -445,6 +453,8 @@
         </p>
       </div>
 
+      <hr class="sep">
+
       <!-- Compteur abonnés -->
       <div class="subscriber-counter">
         <div class="skeleton skeleton-counter" id="skeleton-counter"></div>
@@ -454,6 +464,8 @@
         </div>
         <div class="counter-sub" data-i18n="subscribers-sub" data-skeleton-hide style="display:none">dont toi ⚡</div>
       </div>
+
+      <hr class="sep">
 
       <!-- Stats Cherki -->
       <div class="stats-section">
@@ -474,6 +486,8 @@
           </div>
         </div>
       </div>
+
+      <hr class="sep">
 
       <button id="share-btn" class="btn btn-lime" data-i18n="share-btn" onclick="shareApp()">🔗 Partager l'app</button>
       <button class="btn btn-ghost" data-i18n="unsub-btn" onclick="unsubscribe()">Se désabonner</button>
