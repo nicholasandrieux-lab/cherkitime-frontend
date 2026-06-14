@@ -82,6 +82,9 @@
       margin: auto;
       display: flex;
       flex-direction: column;
+      justify-content: center;
+      min-height: calc(100vh - 48px);
+      min-height: calc(100svh - 48px);
     }
 
     /* ---- TOP BAR ---- */
@@ -95,7 +98,7 @@
     }
     .logo {
       font-family: "Anton", sans-serif;
-      font-size: 20px;
+      font-size: 28px;
       text-transform: uppercase;
       letter-spacing: 0.01em;
       display: inline-flex;
@@ -253,21 +256,22 @@
     /* subscriber counter */
     .subscriber-counter { text-align: center; }
     .counter-main {
-      font-size: 14px;
-      color: var(--grey);
+      font-size: 22px;
+      color: var(--off);
+      font-weight: 700;
       line-height: 1.4;
     }
     .counter-num {
       font-family: "Anton", sans-serif;
-      font-size: 34px;
+      font-size: 52px;
       color: var(--lime);
       letter-spacing: 0;
       margin-right: 4px;
-      vertical-align: -2px;
+      vertical-align: -4px;
     }
     .counter-sub {
       font-family: "IBM Plex Mono", monospace;
-      font-size: 11px; letter-spacing: 0.1em;
+      font-size: 13px; letter-spacing: 0.1em;
       text-transform: uppercase;
       color: var(--lime);
       margin-top: 6px;
