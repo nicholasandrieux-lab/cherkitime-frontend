@@ -1,0 +1,572 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CherkiTime · Buts et passes en direct</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter+Tight:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://images.unsplash.com">
+  <style>
+    /* ---- VARIABLES ---- */
+    :root {
+      --ink: #0A1929;
+      --off: #F4F3EF;
+      --lime: #CCFF00;
+      --grey: #8A8A86;
+      --line: rgba(244,243,239,0.12);
+      --ease: cubic-bezier(0.22, 1, 0.36, 1);
+      --snap: cubic-bezier(0.4, 0, 0.2, 1);
+      --maxw: 1464px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--ink);
+      color: var(--off);
+      font-family: "Inter Tight", system-ui, sans-serif;
+      font-size: 16px;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+    img { display: block; width: 100%; height: 100%; object-fit: cover; }
+    a { color: inherit; text-decoration: none; }
+    button { cursor: pointer; border: none; background: none; font: inherit; color: inherit; }
+    ul { list-style: none; }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+      }
+    }
+
+    .wrap { max-width: var(--maxw); margin: 0 auto; padding: 0 48px; }
+    @media (max-width: 640px) { .wrap { padding: 0 22px; } }
+
+    /* shared display */
+    .anton {
+      font-family: "Anton", "Inter Tight", sans-serif;
+      font-weight: 400;
+      text-transform: uppercase;
+      letter-spacing: -0.01em;
+      line-height: 0.86;
+    }
+    .mono {
+      font-family: "IBM Plex Mono", monospace;
+      letter-spacing: 0.02em;
+    }
+    .label {
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--grey);
+    }
+
+    /* live dot */
+    .live {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--lime);
+    }
+    .live .dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--lime);
+      box-shadow: 0 0 0 0 rgba(204,255,0,0.6);
+      animation: ping 1.8s var(--ease) infinite;
+    }
+    @keyframes ping {
+      0% { box-shadow: 0 0 0 0 rgba(204,255,0,0.55); }
+      70% { box-shadow: 0 0 0 10px rgba(204,255,0,0); }
+      100% { box-shadow: 0 0 0 0 rgba(204,255,0,0); }
+    }
+
+    /* bolt mark (svg, pas emoji) */
+    .bolt { width: 1em; height: 1em; fill: currentColor; vertical-align: -0.08em; }
+
+    /* ============ NAV ============ */
+    .nav {
+      position: fixed; inset: 0 0 auto; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 18px 48px;
+      transition: background 0.4s var(--snap), border-color 0.4s var(--snap);
+      border-bottom: 1px solid transparent;
+    }
+    .nav.scrolled {
+      background: rgba(11,11,12,0.82);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--line);
+    }
+    .nav-logo {
+      font-family: "Anton", sans-serif;
+      font-size: 19px;
+      text-transform: uppercase;
+      letter-spacing: 0.01em;
+      display: inline-flex; align-items: center; gap: 7px;
+    }
+    .nav-logo .bolt { color: var(--lime); }
+    .nav-cta {
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 11px; font-weight: 600;
+      letter-spacing: 0.14em; text-transform: uppercase;
+      background: var(--lime); color: var(--ink);
+      padding: 10px 20px; border-radius: 4px;
+      transition: transform 0.25s var(--snap), background 0.25s;
+    }
+    .nav-cta:hover { transform: translateY(-2px); }
+    @media (max-width: 640px) { .nav { padding: 14px 22px; } .nav-logo { font-size: 16px; } }
+
+    /* ============ HERO ============ */
+    .hero {
+      min-height: 100svh;
+      display: flex; flex-direction: column; justify-content: center;
+      padding: 130px 0 60px;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-bg {
+      position: absolute; inset: 0;
+      opacity: 0.10;
+      filter: grayscale(1) contrast(1.1);
+      z-index: 0;
+    }
+    .hero-bg::after { content: ""; position: absolute; inset: 0; background: linear-gradient(to bottom, var(--ink) 0%, transparent 35%, var(--ink) 100%); }
+    .hero-inner { position: relative; z-index: 1; }
+    .hero-top {
+      display: flex; justify-content: space-between; align-items: baseline;
+      gap: 20px; flex-wrap: wrap;
+      padding-bottom: 26px; margin-bottom: 40px;
+      border-bottom: 1px solid var(--line);
+    }
+    .hero-title {
+      font-size: clamp(72px, 18vw, 290px);
+      margin-bottom: 36px;
+    }
+    .hero-title .reveal { display: block; overflow: hidden; }
+    .hero-title .reveal span {
+      display: block;
+      transform: translateY(105%);
+      animation: rise 0.95s var(--ease) forwards;
+    }
+    .hero-title .reveal:nth-child(2) span { animation-delay: 0.1s; }
+    @keyframes rise { to { transform: translateY(0); } }
+
+    .hero-answer {
+      display: flex; align-items: flex-end; gap: 28px; flex-wrap: wrap;
+      justify-content: space-between;
+    }
+    .hero-q { max-width: 520px; }
+    .hero-q .label { display: block; margin-bottom: 10px; }
+    .hero-q-line {
+      font-family: "Inter Tight", sans-serif;
+      font-size: clamp(18px, 2.4vw, 26px);
+      font-weight: 500; line-height: 1.25;
+    }
+    .hero-q-line b { color: var(--lime); font-weight: 600; }
+    .hero-state {
+      text-align: right;
+    }
+    .hero-state .anton {
+      font-size: clamp(40px, 7vw, 92px);
+      color: var(--lime);
+    }
+    .hero-state .mono { display: block; font-size: 12px; color: var(--grey); margin-top: 6px; }
+
+    @media (max-width: 640px) {
+      .hero-state { text-align: left; }
+      .hero-answer { gap: 32px; }
+    }
+
+    /* ============ LIVE CARD ============ */
+    .live-sec { padding: 80px 0; }
+    .live-card {
+      border: 1px solid var(--line);
+      border-radius: 4px;
+      background: linear-gradient(180deg, rgba(244,243,239,0.03), transparent);
+      padding: 48px;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 36px;
+      align-items: center;
+    }
+    .live-card-h .live { margin-bottom: 18px; }
+    .live-card-h h2 {
+      font-family: "Anton", sans-serif;
+      font-size: clamp(30px, 4vw, 56px);
+      text-transform: uppercase; line-height: 0.92; letter-spacing: -0.01em;
+    }
+    .live-card-h p { color: var(--grey); margin-top: 14px; max-width: 440px; font-size: 15px; }
+    .live-clock {
+      font-family: "IBM Plex Mono", monospace;
+      font-size: clamp(34px, 5vw, 64px);
+      font-weight: 500;
+      color: var(--off);
+      white-space: nowrap;
+    }
+    .live-clock small { display: block; font-size: 12px; color: var(--grey); letter-spacing: 0.16em; text-transform: uppercase; margin-top: 8px; text-align: right; }
+    @media (max-width: 760px) {
+      .live-card { grid-template-columns: 1fr; padding: 32px; }
+      .live-clock { text-align: left; }
+      .live-clock small { text-align: left; }
+    }
+
+    /* ============ STATS ============ */
+    .stats { padding: 80px 0 90px; }
+    .stats-head {
+      display: flex; justify-content: space-between; align-items: flex-end;
+      gap: 20px; flex-wrap: wrap;
+      margin-bottom: 48px; padding-bottom: 22px;
+      border-bottom: 1px solid var(--line);
+    }
+    .stats-head h2 {
+      font-family: "Anton", sans-serif; text-transform: uppercase;
+      font-size: clamp(34px, 5vw, 74px); line-height: 0.9; letter-spacing: -0.01em;
+    }
+    .stats-grid {
+      display: grid; grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+    }
+    .stat {
+      border: 1px solid var(--line); border-radius: 4px;
+      padding: 32px 28px 26px;
+      transition: border-color 0.3s var(--snap), background 0.3s;
+    }
+    .stat:hover { border-color: var(--lime); background: rgba(204,255,0,0.03); }
+    .stat-num {
+      font-family: "Anton", sans-serif;
+      font-size: clamp(56px, 8vw, 112px);
+      line-height: 0.84; letter-spacing: -0.02em;
+      color: var(--off);
+    }
+    .stat:hover .stat-num { color: var(--lime); }
+    .stat-lab {
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase;
+      color: var(--grey); margin-top: 18px;
+    }
+    @media (max-width: 460px) { .stats-grid { grid-template-columns: 1fr; } }
+
+    /* ============ HOW (notifications) ============ */
+    .how { padding: 90px 0; background: var(--off); color: var(--ink); }
+    .how .label { color: rgba(11,11,12,0.5); }
+    .how-head {
+      max-width: 720px; margin-bottom: 56px;
+    }
+    .how-head h2 {
+      font-family: "Anton", sans-serif; text-transform: uppercase;
+      font-size: clamp(36px, 6vw, 92px); line-height: 0.88; letter-spacing: -0.015em;
+      margin-top: 16px;
+    }
+    .how-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: rgba(11,11,12,0.12); border: 1px solid rgba(11,11,12,0.12); }
+    .how-step {
+      background: var(--off);
+      padding: 38px 32px 44px;
+      display: flex; flex-direction: column;
+    }
+    .how-num {
+      font-family: "IBM Plex Mono", monospace; font-size: 12px; font-weight: 600;
+      letter-spacing: 0.16em; color: var(--ink);
+      padding-bottom: 28px;
+    }
+    .how-step h3 {
+      font-family: "Anton", sans-serif; text-transform: uppercase;
+      font-size: 26px; line-height: 1; letter-spacing: -0.01em; margin-bottom: 12px;
+    }
+    .how-step p { font-size: 14px; color: rgba(11,11,12,0.62); line-height: 1.6; }
+    @media (max-width: 760px) { .how-grid { grid-template-columns: 1fr; } }
+
+    /* ============ INSTALL ============ */
+    .install { padding: 90px 0; }
+    .install-inner {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: center;
+    }
+    .install h2 {
+      font-family: "Anton", sans-serif; text-transform: uppercase;
+      font-size: clamp(40px, 6vw, 96px); line-height: 0.86; letter-spacing: -0.015em;
+      margin: 16px 0 24px;
+    }
+    .install h2 .hl { color: var(--lime); }
+    .install p { color: var(--grey); max-width: 420px; margin-bottom: 36px; }
+    .install-btns { display: flex; gap: 12px; flex-wrap: wrap; }
+    .btn {
+      font-family: "IBM Plex Mono", monospace; font-size: 12px; font-weight: 600;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      padding: 15px 26px; border-radius: 4px;
+      transition: transform 0.25s var(--snap), background 0.25s, color 0.25s;
+    }
+    .btn-lime { background: var(--lime); color: var(--ink); }
+    .btn-lime:hover { transform: translateY(-2px); }
+    .btn-ghost { border: 1px solid var(--line); color: var(--off); }
+    .btn-ghost:hover { border-color: var(--off); }
+
+    .steps { border-top: 1px solid var(--line); }
+    .step {
+      display: grid; grid-template-columns: 48px 1fr; gap: 18px;
+      padding: 22px 0; border-bottom: 1px solid var(--line);
+      opacity: 0; transform: translateY(14px);
+      transition: opacity 0.6s var(--ease), transform 0.6s var(--ease);
+    }
+    .step.in { opacity: 1; transform: translateY(0); }
+    .step-n { font-family: "Anton", sans-serif; font-size: 30px; color: var(--lime); line-height: 1; }
+    .step-t { font-weight: 600; margin-bottom: 4px; }
+    .step-d { font-size: 14px; color: var(--grey); line-height: 1.55; }
+    @media (max-width: 820px) { .install-inner { grid-template-columns: 1fr; gap: 44px; } }
+
+    /* ============ FOOTER ============ */
+    .footer { border-top: 1px solid var(--line); padding: 40px 0 36px; }
+    .footer-inner { display: flex; justify-content: space-between; align-items: center; gap: 24px; flex-wrap: wrap; }
+    .footer-logo { font-family: "Anton", sans-serif; font-size: 17px; text-transform: uppercase; display: inline-flex; align-items: center; gap: 7px; }
+    .footer-logo .bolt { color: var(--lime); }
+    .footer-note { font-family: "IBM Plex Mono", monospace; font-size: 11px; color: var(--grey); letter-spacing: 0.04em; }
+    .footer-note a { color: var(--off); }
+    .footer-disclaimer { font-family: "IBM Plex Mono", monospace; font-size: 10px; color: var(--grey); letter-spacing: 0.06em; margin-top: 18px; line-height: 1.6; max-width: 640px; }
+
+    /* fade util */
+    .fade { opacity: 0; transform: translateY(20px); transition: opacity 0.8s var(--ease), transform 0.8s var(--ease); }
+    .fade.in { opacity: 1; transform: translateY(0); }
+  </style>
+</head>
+<body>
+
+  <!-- bolt symbol -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <symbol id="bolt" viewBox="0 0 24 24"><path d="M13 2 4.5 13.5H11l-1 8.5 8.5-12H12l1-8z"/></symbol>
+  </svg>
+
+  <!-- ============ NAV ============ -->
+  <nav class="nav" id="nav">
+    <span class="nav-logo"><svg class="bolt"><use href="#bolt"/></svg>CherkiTime</span>
+    <a href="#install" class="nav-cta">Activer les alertes</a>
+  </nav>
+
+  <!-- ============ HERO ============ -->
+  <header class="hero">
+    <div class="hero-bg" aria-hidden="true">
+      <img src="https://images.unsplash.com/photo-1431324155629-1a6deb1dec8d?w=1800&q=80&fit=crop&auto=format" alt="">
+    </div>
+    <div class="wrap hero-inner">
+      <div class="hero-top">
+        <span class="live"><span class="dot"></span>En direct · Saison 2025-26</span>
+        <span class="label">Non officiel · Tracker indépendant</span>
+      </div>
+
+      <h1 class="hero-title anton">
+        <span class="reveal"><span>Cherki</span></span>
+        <span class="reveal"><span>Time</span></span>
+      </h1>
+
+      <div class="hero-answer">
+        <div class="hero-q">
+          <span class="label">La seule question qui compte</span>
+          <p class="hero-q-line">Est-ce que Rayan Cherki joue ce soir&nbsp;? On surveille chaque match et on vous prévient <b>à la seconde</b> où il entre sur le terrain.</p>
+        </div>
+        <div class="hero-state">
+          <span class="anton">Pas encore</span>
+          <span class="mono">Prochain match · 16 juin 🇫🇷</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ============ LIVE CARD ============ -->
+  <section class="live-sec">
+    <div class="wrap">
+      <div class="live-card fade">
+        <div class="live-card-h">
+          <span class="live"><span class="dot"></span>Surveillance active</span>
+          <h2>On surveille<br>Cherki pour vous</h2>
+          <p>Dès qu'il entre sur le terrain, la notification part. But, passe décisive, carton — vous êtes au courant avant tout le monde.</p>
+        </div>
+        <div class="live-clock">
+          <span id="clock">00:00:00</span>
+          <small>Temps écoulé depuis l'ouverture</small>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ STATS ============ -->
+  <section class="stats">
+    <div class="wrap">
+      <div class="stats-head">
+        <h2>La saison<br>en chiffres</h2>
+      </div>
+      <div class="stats-grid">
+        <div class="stat fade">
+          <div class="stat-num" data-count="11">0</div>
+          <div class="stat-lab">Buts</div>
+        </div>
+        <div class="stat fade">
+          <div class="stat-num" data-count="16">0</div>
+          <div class="stat-lab">Passes décisives</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ HOW ============ -->
+  <section class="how">
+    <div class="wrap">
+      <div class="how-head">
+        <span class="label">Comment ça marche</span>
+        <h2>Trois étapes,<br>zéro effort</h2>
+      </div>
+      <div class="how-grid">
+        <div class="how-step">
+          <span class="how-num">01</span>
+          <h3>On surveille</h3>
+          <p>Le tracker suit chaque match de Rayan Cherki en temps réel, de la composition d'équipe au coup de sifflet final.</p>
+        </div>
+        <div class="how-step">
+          <span class="how-num">02</span>
+          <h3>Il entre en jeu</h3>
+          <p>Titulaire ou remplaçant, on détecte le moment exact où Cherki foule la pelouse. Buts et passes sont aussi suivis.</p>
+        </div>
+        <div class="how-step">
+          <span class="how-num">03</span>
+          <h3>Vous savez</h3>
+          <p>Une notification arrive sur votre écran à la seconde. Vous célébrez avant même le ralenti télé.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ INSTALL ============ -->
+  <section class="install" id="install">
+    <div class="wrap">
+      <div class="install-inner">
+        <div class="fade">
+          <span class="label">Installation</span>
+          <h2>Sur votre<br>écran <span class="hl">en 10s</span></h2>
+          <p>CherkiTime s'installe comme une vraie app, sans passer par un store. Notifications activées, c'est prêt.</p>
+        </div>
+        <div class="steps">
+          <div class="step">
+            <span class="step-n">1</span>
+            <div>
+              <p class="step-t">Ouvrez le menu Partager</p>
+              <p class="step-d">Sur Safari iOS, touchez l'icône de partage en bas de l'écran.</p>
+            </div>
+          </div>
+          <div class="step">
+            <span class="step-n">2</span>
+            <div>
+              <p class="step-t">Sur l'écran d'accueil</p>
+              <p class="step-d">Choisissez « Ajouter à l'écran d'accueil », puis confirmez.</p>
+            </div>
+          </div>
+          <div class="step">
+            <span class="step-n">3</span>
+            <div>
+              <p class="step-t">Activez les notifications</p>
+              <p class="step-d">Au premier lancement, autorisez les alertes. Vous ne raterez plus rien.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ FOOTER ============ -->
+  <footer class="footer">
+    <div class="wrap">
+      <div class="footer-inner">
+        <span class="footer-logo"><svg class="bolt"><use href="#bolt"/></svg>CherkiTime</span>
+        <span class="footer-note">Fait par un fan · <a href="#">Suivre</a></span>
+      </div>
+      <p class="footer-disclaimer">Projet indépendant et non officiel, sans lien avec Rayan Cherki, son club ou une quelconque institution. Les statistiques affichées sont fournies à titre informatif.</p>
+    </div>
+  </footer>
+
+  <!-- ============ SCRIPTS ============ -->
+  <script>
+    /* nav scroll */
+    const nav = document.getElementById('nav');
+    addEventListener('scroll', () => nav.classList.toggle('scrolled', scrollY > 50), { passive: true });
+
+    /* generic fade + step + count-up via IntersectionObserver */
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (!e.isIntersecting) return;
+        e.target.classList.add('in');
+        if (e.target.classList.contains('stat')) countUp(e.target.querySelector('[data-count]'));
+        io.unobserve(e.target);
+      });
+    }, { threshold: 0.15 });
+
+    document.querySelectorAll('.fade, .stat').forEach(el => io.observe(el));
+
+    /* staggered install steps */
+    const stepIO = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (!e.isIntersecting) return;
+        e.target.classList.add('in');
+        stepIO.unobserve(e.target);
+      });
+    }, { threshold: 0.2 });
+    document.querySelectorAll('.step').forEach((el, i) => { el.style.transitionDelay = (i * 90) + 'ms'; stepIO.observe(el); });
+
+    /* count up */
+    function countUp(el) {
+      if (!el) return;
+      const target = parseInt(el.dataset.count, 10);
+      const dur = 1100;
+      const start = performance.now();
+      function tick(now) {
+        const p = Math.min((now - start) / dur, 1);
+        const eased = 1 - Math.pow(1 - p, 3);
+        el.textContent = Math.round(target * eased).toLocaleString('fr-FR');
+        if (p < 1) requestAnimationFrame(tick);
+      }
+      requestAnimationFrame(tick);
+    }
+
+    /* stats dynamiques — récupère buts/passes depuis le backend.
+       Les valeurs en dur (data-count) servent de fallback si l'API échoue. */
+    function setStat(el, value) {
+      if (!el || !Number.isFinite(value)) return;
+      el.dataset.count = value;
+      // Si le count-up s'est déjà déclenché, on relance avec la vraie valeur.
+      if (el.closest('.stat')?.classList.contains('in')) countUp(el);
+    }
+    (async function loadStats() {
+      try {
+        const res = await fetch('https://cherkitime-backend.onrender.com/cherki/stats');
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        const data = await res.json();
+        const nums = document.querySelectorAll('.stats .stat-num');
+        setStat(nums[0], Number(data.goals));   // Buts
+        setStat(nums[1], Number(data.assists)); // Passes décisives
+      } catch (err) {
+        console.warn('[stats] API indisponible, valeurs par défaut conservées :', err.message);
+      }
+    })();
+
+    /* live clock since open */
+    const clock = document.getElementById('clock');
+    const t0 = Date.now();
+    setInterval(() => {
+      const s = Math.floor((Date.now() - t0) / 1000);
+      const h = String(Math.floor(s / 3600)).padStart(2, '0');
+      const m = String(Math.floor((s % 3600) / 60)).padStart(2, '0');
+      const sec = String(s % 60).padStart(2, '0');
+      clock.textContent = `${h}:${m}:${sec}`;
+    }, 1000);
+  </script>
+
+</body>
+</html>
