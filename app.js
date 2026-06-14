@@ -19,38 +19,44 @@ const LANG = navigator.language.startsWith('fr') ? 'fr' : 'en';
 
 const TRANSLATIONS = {
   fr: {
-    'subscribe-btn':    '🔔 Activer les notifications',
+    'activation-title': 'Ne rate plus un seul match',
+    'activation-sub':   'Reçois une notification dès que Cherki entre sur le terrain, marque ou délivre une passe.',
+    'subscribe-btn':    '⚡ Activer les notifications',
+    'pre-counter-text': ' personnes déjà abonnées',
     'bell-hint':        'Appuie sur la cloche pour activer',
     'subscribed-title': 'Notifications activées !',
     'subscribed-text':  'Tu recevras une notification dès que Cherki est titulaire ou entre en jeu, même téléphone verrouillé.',
     'unsub-btn':        'Se désabonner',
-    'share-btn':        'Partager l\'app',
+    'share-btn':        '🔗 Partager l\'app',
     'subscribers-sub':  'dont toi ⚡',
-    'counter-text':     ' fans en attente de cherkiball',
-    'stats-title':      'SAISON 25/26',
+    'counter-text':     ' attendent du cherkiball',
+    'stats-title':      'Saison 25/26',
     'stat-goals':       'Buts · TCC',
     'stat-assists':     'Passes · TCC',
-    'status-watching':  'En attente de cherkiball... 🔴',
+    'status-watching':  'En attente de cherkiball...',
     'status-sub':       'Notif garantie dès que Cherki joue ⚡',
-    'footer-text':      'fait par un fan ⚡',
-    'ios-guide-title':  '📱 Pour activer les notifications sur iPhone',
+    'footer-text':      'CherkiTime · fait par un fan ⚡',
+    'ios-guide-title':  'Activer les notifications sur iPhone',
   },
   en: {
-    'subscribe-btn':    '🔔 Enable notifications',
+    'activation-title': 'Never miss a single match',
+    'activation-sub':   'Get a notification the moment Cherki steps on the pitch, scores or assists.',
+    'subscribe-btn':    '⚡ Enable notifications',
+    'pre-counter-text': ' people already subscribed',
     'bell-hint':        'Tap the bell to enable',
     'subscribed-title': 'Notifications enabled!',
     'subscribed-text':  "You'll get a notification as soon as Cherki starts or comes on, even with your phone locked.",
     'unsub-btn':        'Unsubscribe',
-    'share-btn':        'Share the app',
+    'share-btn':        '🔗 Share the app',
     'subscribers-sub':  'including you ⚡',
-    'counter-text':     ' enjoyers waiting for cherkiball',
-    'stats-title':      'SEASON 25/26',
+    'counter-text':     ' waiting for cherkiball',
+    'stats-title':      'Season 25/26',
     'stat-goals':       'Goals · ACC',
     'stat-assists':     'Assists · ACC',
-    'status-watching':  'Watching for cherkiball... 🔴',
+    'status-watching':  'Watching for cherkiball...',
     'status-sub':       'Notifications guaranteed when Cherki plays ⚡',
-    'footer-text':      'made by a fan ⚡',
-    'ios-guide-title':  '📱 To enable notifications on iPhone',
+    'footer-text':      'CherkiTime · made by a fan ⚡',
+    'ios-guide-title':  'Enable notifications on iPhone',
   },
 };
 
@@ -183,8 +189,11 @@ async function loadSubscriberCount() {
       const res = await fetch(`${BACKEND_URL}/subscribers`);
       if (!res.ok) throw new Error('not ok');
       const data = await res.json();
+      const count = data.subscribers ?? '—';
       const el = document.getElementById('subscriber-count');
-      if (el) el.textContent = data.subscribers ?? '—';
+      if (el) el.textContent = count;
+      const elPre = document.getElementById('subscriber-count-pre');
+      if (elPre) elPre.textContent = count;
       hideSkeleton();
     } catch (err) {
       setTimeout(tryFetch, 3000);
@@ -216,13 +225,12 @@ function setLiveStatus(isLive) {
   const dot = document.getElementById('status-dot');
   const text = document.getElementById('status-text');
   if (!dot || !text) return;
+  // Dot toujours lime (DA bleu nuit + lime) — seul le texte change
+  dot.style.background = '#CCFF00';
+  document.querySelector('.pulse-ring').style.borderColor = '#CCFF00';
   if (isLive) {
-    dot.style.background = '#22c55e';
-    document.querySelector('.pulse-ring').style.borderColor = '#22c55e';
     text.textContent = LANG === 'fr' ? 'CHERKITIME EN DIRECT ⚡' : 'CHERKITIME LIVE ⚡';
   } else {
-    dot.style.background = '#e63946';
-    document.querySelector('.pulse-ring').style.borderColor = '#e63946';
     text.textContent = TRANSLATIONS[LANG]['status-watching'];
   }
 }
@@ -256,6 +264,8 @@ async function loadMatchStatus() {
 function showSubscribedUI() {
   document.getElementById('subscribe-section').style.display = 'none';
   document.getElementById('subscribed-section').style.display = 'flex';
+  const liveBadge = document.getElementById('live-badge');
+  if (liveBadge) liveBadge.style.display = 'inline-flex';
   loadSubscriberCount();
   loadMatchStatus();
   setTimeout(hideSkeleton, 6000);
