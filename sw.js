@@ -1,5 +1,5 @@
-const CACHE_NAME = 'cherkitime-v1';
-const ASSETS = ['/', '/index.html', '/app.js', '/manifest.json', '/icon-512.png'];
+const CACHE_NAME = 'cherkitime-v2';
+const ASSETS = ['/app.html', '/app.js', '/manifest.json', '/icon-512.png'];
 
 // Installation du service worker
 self.addEventListener('install', (event) => {
@@ -10,7 +10,11 @@ self.addEventListener('install', (event) => {
 });
 
 self.addEventListener('activate', (event) => {
-  event.waitUntil(clients.claim());
+  event.waitUntil(
+    caches.keys()
+      .then((keys) => Promise.all(keys.filter((k) => k !== CACHE_NAME).map((k) => caches.delete(k))))
+      .then(() => clients.claim())
+  );
 });
 
 // Cache first pour les assets
@@ -35,7 +39,7 @@ self.addEventListener('push', (event) => {
     requireInteraction: true,
     tag: 'cherkitime',
     renotify: true,
-    data: { url: '/', ...data.data },
+    data: { url: '/app.html', ...data.data },
     actions: [
       { action: 'open', title: '⚽ Voir le match' },
     ],
@@ -60,10 +64,11 @@ self.addEventListener('notificationclick', (event) => {
     Promise.all([
       self.navigator?.clearAppBadge?.(),
       clients.matchAll({ type: 'window', includeUncontrolled: true }).then((clientList) => {
+        const target = event.notification.data?.url || '/app.html';
         for (const client of clientList) {
-          if (client.url === '/' && 'focus' in client) return client.focus();
+          if (client.url.includes('/app.html') && 'focus' in client) return client.focus();
         }
-        if (clients.openWindow) return clients.openWindow('/');
+        if (clients.openWindow) return clients.openWindow(target);
       }),
     ])
   );
